@@ -1,80 +1,116 @@
 # Colour Adjacencies
 Reads an image and outputs the colour adjacencies.
 
-Primary objective is to help me learn Python. 
+This is a Java implementation with a command line interface.
+
+Primary objective is to refresh my Java, and also to have a benchmark
+implementation of CoulAdj.
 
 This project declares conformity to [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 There is currently no API version number, because there has been no public release.
 
 **This project is still in development and is not ready for public consumption.**
 
-"Colour" and "color" will be used interchangeably and arbitrarily in both the code
+"Colour" and "color" may be used interchangeably and arbitrarily in both the code
 and documentation.
 
-Long term objective is to publish as a module on PIP.
 
 # About this Github repository
 
 *   I made this Github repository public so I could share with my twitter friends.
 *   It may be made private in the future.
 
+
 # Known or Assumed Requirements
 
-* [Anaconda](https://www.anaconda.com/products/individual)
-    * Development was done with the Individual Edition (Distribution)
-    * _NB: Upon install, Anaconda will modify your command line prompt to prefix
-        it with the active environment in parenthesis._
+* Java
+    * Development is made with OpenJDK 14
+* Make
+* Linux to run the test scripts and use the makefile (sorry 😬)
 
-# How to run
 
-**NB: These instructions have not been tested on Windows**
 
-## First time setup
-1. Clone the git repository
-1. On the command line, navigate to the cloned repository
-1. Run this command:
+# How to Compile & Test
+
+To compile and launch tests:
 ```
-conda env create -f environment.yml
+$ make
 ```
 
-## To Run
-1. Read these instructions
-1. Take a quick look at the source code to see if they still make sense (sorry 😅)
-1. While you're in the source code, modify the input variables at the
-top of the file to suit what you want to run in the program (Gotcha 😎)
-1. On the command line, navigate to the cloned repository
-1. Run these commands:
+To only compile:
+```
+$ make only
+```
+
+To only test:
+```
+$ make test
+```
+
+To only test correctness:
+```
+$ make test-corr
+```
+
+To remove build artifacts:
+```
+$ make clean
+```
+
+To remove build artifacts and then compile and launch tests:
+```
+$ make fresh
+```
+
+
+
+
+
+# How to Use
+*   This program is made to be called on the command line.
+*   Can be called with 2 or 3 arguments.
+*   If 2 arguments:
+    - **1st** must be filepath to **image** file.
+    - **2nd** must be filepath to **results** TSV file.
+    ```bash
+    $ java -jar ./CoulAdj.jar "path/to/image.png" "path/to/results.tsv"
     ```
-    conda activate CoulAdj-Py
-    python CoulAdj-Py.py
+*   The 3 arguments form is to use the `dont-relate-diagonals` option:
+    - **1st** must be `--dont-relate-diagonals`.
+    - **2nd** must be filepath to **image** file.
+    - **3rd** must be filepath to **results** TSV file.
+    ```bash
+    $ java -jar ./CoulAdj.jar --dont-relate-diagonals "path/to/image.png" "path/to/results.tsv"
     ```
+
+
 
 
 # API
 
 ## Input 
 *   Source image file path
-*   Source image Python file object (maybe?)
+*   Results TSV file path
 *   Option(s)
-    * Relate Diagonals
-        * `True` by default. All 8 neighbours are considered adjacent.
-        * If `False`, only consider as adjacent the four (4) neighbours with
-        a common edge. (top, bottom, left, and right neighbours)
+    * `dont-relate-diagonals`
+        * By default, all 8 neighbours are considered adjacent.
+        * If this option is present, CoulAdj will only consider as adjacent the 
+        four (4) neighbours with a common edge. 
+        (top, bottom, left, and right neighbours)
 
 ## Known limitations
-*   (none yet)
+*   (none yet, or maybe I forgot to update this Readme...)
 
 
 ## Output
 *   TSV File
-*   Python native object (maybe?)
 
 ### TSV File
-*   Tab-separated values (tsv)
+*   Tab-Separated Values
     *   [Summary on Wikipedia](https://en.wikipedia.org/wiki/Tab-separated_values) 
     *   [Official specifications](https://www.iana.org/assignments/media-types/text/tab-separated-values)
 
-*   Data will be organized like this:
+*   Data will be organized in this fashion:
 
     |r  |g  |b  |a  |adj_r|adj_g|adj_b|adj_a|
     |---|---|---|---|-----|-----|-----|-----|
@@ -148,6 +184,3 @@ a color cannot be adjacent with itself.
     | `adj_a`   |Adjacent Alpha |
 
 *   The line-endings may be either in Windows (CRLF) or Unix (LF) style.
-
-### Python Native Object
-(To be completed)
