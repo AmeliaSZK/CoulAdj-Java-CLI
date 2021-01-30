@@ -54,4 +54,4 @@ fresh: clean all
 .PHONY: test
 
 test: $(JARFILE)
-	java -jar $(JARFILE)
+	bash test-corr.sh
