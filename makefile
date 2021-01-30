@@ -51,7 +51,12 @@ fresh: clean all
 ################################################################################
 # Customize your tests below
 ################################################################################
-.PHONY: test
+.PHONY: test test-simple test-corr
 
-test: $(JARFILE)
+test: test-simple
+
+test-simple: $(JARFILE)
+	java -jar $(JARFILE)
+
+test-corr: $(JARFILE)
 	bash test-corr.sh
