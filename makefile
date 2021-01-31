@@ -56,7 +56,7 @@ fresh: clean all
 test: test-simple
 
 test-simple: 
-	java -jar $(JARFILE)
+	java -jar $(JARFILE) ./tests/samples/sample-size-1.png ./tests/results/result-size-1.tsv
 
 test-corr: 
 	bash test-corr.sh
