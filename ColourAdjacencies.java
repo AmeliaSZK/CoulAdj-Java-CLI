@@ -1,5 +1,6 @@
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ColourAdjacencies {
@@ -33,21 +34,24 @@ public class ColourAdjacencies {
         return;
     }
 
+    public void computeLines() {
+        if (linesAreComputed) {
+            return;
+        } else if (!adjacenciesAreComputed) {
+            computeAdjacencies();
+        }
+
+        lines = new ArrayList<String>();
+        // TODO
+
+        linesAreComputed = true;
+        return;
+    }
+
     public List<String> toLines() {
         if (!linesAreComputed) {
             computeLines();
         }
         return lines;
-    }
-
-    private void computeLines() {
-        if (linesAreComputed) {
-            return;
-        }
-        
-        // TODO
-
-        linesAreComputed = true;
-        return;
     }
 }

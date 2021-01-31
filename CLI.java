@@ -88,11 +88,13 @@ public class CLI {
             }
 
             // # Invoke ColourAdjacencies
+            ColourAdjacencies adjacencies =
+                new ColourAdjacencies(image, dontRelateDiagonals);
+            adjacencies.computeAdjacencies();
+            adjacencies.computeLines();
 
             // # Write results to file
-            List<String> lines = new ArrayList<String>();
-            lines.add("Hello");
-            lines.add("Hi");
+            List<String> lines = adjacencies.toLines();
 
             Files.write(resultsFile.toPath(), lines);
 
