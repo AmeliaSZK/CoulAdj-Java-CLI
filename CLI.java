@@ -21,7 +21,7 @@ public class CLI {
     public static final String ERRMSG_IMAGE_FILE_CANREAD =
         "Error: The file `%s` cannot be read.\n";
     public static final String ERRMSG_RESULTS_FILE_CANWRITE =
-        "Error: The file `%s` cannot be created or modified.\n";
+        "Error: The file `%s` cannot be modified.\n";
     public static final String ERRMSG_IMAGE_NULL =
         "Error: The file `%s` couldn't be parsed as an image.\n";
 
