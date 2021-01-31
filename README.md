@@ -25,6 +25,7 @@ and documentation.
 
 * Java
     * Development is made with OpenJDK 14
+    * Java 7 and earlier won't work
 * Make
 * Linux to run the test scripts and use the makefile (sorry 😬)
 
@@ -32,7 +33,7 @@ and documentation.
 
 # How to Compile & Test
 
-To compile and launch tests:
+To compile and test correctness:
 ```
 $ make
 ```
@@ -42,14 +43,15 @@ To only compile:
 $ make only
 ```
 
-To only test:
-```
-$ make test
-```
-
 To only test correctness:
 ```
 $ make test-corr
+```
+
+To only test performance:
+(expect the last 2 samples to take about 12 and 45 seconds respectively)
+```
+$ make test-perf
 ```
 
 To remove build artifacts:
@@ -57,10 +59,22 @@ To remove build artifacts:
 $ make clean
 ```
 
-To remove build artifacts and then compile and launch tests:
+To remove build artifacts and then compile and test correctness:
 ```
 $ make fresh
 ```
+
+## Test results
+If you get no failure message, then all tests passed.
+
+The program will print its execution time on `stderr` when it is done.
+For the correctness test, this output is suppressed by the bash script.
+For the performance test, you'll be shown this output.
+
+(You should look into the source of the performance script (`test-perf.sh`)
+to better understand the output, because I kind of wrote it quickly... 😶)
+
+The correctness test does *not* verify the `--dont-relate-diagonals` option.
 
 
 
@@ -75,7 +89,7 @@ $ make fresh
     ```bash
     $ java -jar ./CoulAdj.jar "path/to/image.png" "path/to/results.tsv"
     ```
-*   The 3 arguments form is to use the `dont-relate-diagonals` option:
+*   The 3 arguments form is to use the `--dont-relate-diagonals` option:
     - **1st** must be `--dont-relate-diagonals`.
     - **2nd** must be filepath to **image** file.
     - **3rd** must be filepath to **results** TSV file.
@@ -92,7 +106,7 @@ $ make fresh
 *   Source image file path
 *   Results TSV file path
 *   Option(s)
-    * `dont-relate-diagonals`
+    * `--dont-relate-diagonals`
         * By default, all 8 neighbours are considered adjacent.
         * If this option is present, CoulAdj will only consider as adjacent the 
         four (4) neighbours with a common edge. 

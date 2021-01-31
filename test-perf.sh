@@ -30,5 +30,5 @@ evaluate_size 64
 evaluate_size 128
 evaluate_size 256
 evaluate_size 512
-#evaluate_size 1024
-echo "Tests finished"
+evaluate_size 1024
+echo "Performance test(s) finished"
