@@ -53,7 +53,7 @@ fresh: clean all
 ################################################################################
 .PHONY: test test-simple test-corr
 
-test: test-simple
+test: test-corr
 
 test-simple: 
 	java -jar $(JARFILE) ./tests/samples/sample-size-1.png ./tests/results/result-size-1.tsv
