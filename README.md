@@ -99,7 +99,7 @@ $ make fresh
         (top, bottom, left, and right neighbours)
 
 ## Known limitations
-*   (none yet, or maybe I forgot to update this Readme...)
+*   Images with more than 8 bits per channel cannot be processed.
 
 
 ## Output
