@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -106,9 +105,10 @@ public class CLI {
         // # End timer and report duration
         LocalDateTime endTime = LocalDateTime.now();
         Duration duration = Duration.between(startTime, endTime);
+        int millis = duration.toMillisPart();
         int seconds = duration.toSecondsPart();
         long minutes = duration.truncatedTo(ChronoUnit.MINUTES).toMinutes();
-        System.out.printf("%d:%02d\n", minutes, seconds);
+        System.err.printf("%d:%02d.%03d\n", minutes, seconds, millis);
 
         return;
     }
