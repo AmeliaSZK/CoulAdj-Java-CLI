@@ -11,10 +11,10 @@ import java.util.TreeSet;
 public class ColourAdjacencies {
     public static final boolean DIAGONALS_DEFAULT = false;
 
-    private BufferedImage image;
-    private boolean dontRelateDiagonals;
+    private final BufferedImage image;
+    private final boolean dontRelateDiagonals;
     private List<String> lines;
-    private ColorModel cm;
+    private final ColorModel cm;
     private Map<Integer, Set<Integer>> adjacencies;
 
     private boolean adjacenciesAreComputed = false;
@@ -37,10 +37,26 @@ public class ColourAdjacencies {
             return;
         }
 
-        // TODO
+        final boolean hasAlpha = cm.hasAlpha();
+        final Comparator<Integer> comparator =
+            hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
+        adjacencies = new TreeMap<>(comparator);
+
+        final int maxX = image.getWidth() - 1;
+        final int maxY = image.getHeight() - 1;
+
+        for (int x = 0; x <= maxX; x++) {
+            for (int y = 0; y <= maxY; y++) {
+                evaluateAllNeighbours(x, y);
+            }
+        }
 
         adjacenciesAreComputed = true;
         return;
+    }
+
+    private void evaluateAllNeighbours(int x, int y) {
+
     }
 
     public void computeLines() {
@@ -88,7 +104,7 @@ public class ColourAdjacencies {
 
             } else if (cm.getBlue(a) != cm.getBlue(b)) {
                 return cm.getBlue(a) - cm.getBlue(b);
-                
+
             } else {
                 return cm.getAlpha(a) - cm.getAlpha(b);
             }
