@@ -26,10 +26,8 @@ public class CLI {
         "Error: The file `%s` couldn't be parsed as an image.\n";
 
     public static void main(String args[]) {
-
-        System.out.println("~~~~~ Starting ~~~~~");
-
         // # Start timer
+        System.out.println("~~~~~ Starting ~~~~~");
         LocalDateTime startTime = LocalDateTime.now();
 
         // # Parse command line
@@ -64,53 +62,41 @@ public class CLI {
         System.out.println("imageFilepath = " + imageFilepath);
         System.out.println("resultsFilepath = " + resultsFilepath);
 
-        // # Open the files
-        File imageFile = new File(imageFilepath);
-        File resultsFile = new File(resultsFilepath);
-
-        if (!imageFile.canRead()) {
-            System.err.printf(ERRMSG_IMAGE_FILE_CANREAD,
-                              imageFile.getAbsolutePath());
-            System.exit(-1);
-        }
-
         try {
+            // # Open the files
+            File imageFile = new File(imageFilepath);
+            File resultsFile = new File(resultsFilepath);
+
             resultsFile.createNewFile();
-        } catch (IOException e) {
-            System.err.println(e.getLocalizedMessage());
-            System.exit(-1);
-        }
+            if (!imageFile.canRead()) {
+                System.err.printf(ERRMSG_IMAGE_FILE_CANREAD,
+                                  imageFile.getAbsolutePath());
+                System.exit(-1);
+            }
+            if (!resultsFile.canWrite()) {
+                System.err.printf(ERRMSG_RESULTS_FILE_CANWRITE,
+                                  resultsFile.getAbsolutePath());
+                System.exit(-1);
+            }
 
-        if (!resultsFile.canWrite()) {
-            System.err.printf(ERRMSG_RESULTS_FILE_CANWRITE,
-                              resultsFile.getAbsolutePath());
-            System.exit(-1);
-        }
+            // # Convert to BufferedImage
+            BufferedImage image = ImageIO.read(imageFile);
+            System.out.println(image);
 
-        // # Convert to BufferedImage
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(imageFile);
-        } catch (IOException e) {
-            System.err.println(e.getLocalizedMessage());
-            System.exit(-1);
-        }
-        System.out.println(image);
+            if (image == null) {
+                System.err.printf(ERRMSG_IMAGE_NULL, imageFile);
+                System.exit(-1);
+            }
 
-        if (image == null) {
-            System.err.printf(ERRMSG_IMAGE_NULL, imageFile);
-            System.exit(-1);
-        }
+            // # Invoke ColourAdjacencies
 
-        // # Invoke ColourAdjacencies
+            // # Write results to file
+            List<String> lines = new ArrayList<String>();
+            lines.add("Hello");
+            lines.add("Hi");
 
-        // # Write results to file
-        List<String> lines = new ArrayList<String>();
-        lines.add("Hello");
-        lines.add("Hi");
-
-        try {
             Files.write(resultsFile.toPath(), lines);
+
         } catch (IOException e) {
             System.err.println(e.getLocalizedMessage());
             System.exit(-1);
