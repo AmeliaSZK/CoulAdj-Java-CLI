@@ -1,5 +1,6 @@
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -152,15 +153,18 @@ public class ColourAdjacencies {
     }
 
     private String formatAdjacency(int pixel, int neigh) {
-        final int r = cm.getRed(pixel);
-        final int g = cm.getGreen(pixel);
-        final int b = cm.getBlue(pixel);
-        final int a = hasAlpha ? cm.getAlpha(pixel) : 255;
+        Color pixelColour = new Color(pixel, hasAlpha);
+        Color neighColour = new Color(neigh, hasAlpha);
 
-        final int adj_r = cm.getRed(neigh);
-        final int adj_g = cm.getGreen(neigh);
-        final int adj_b = cm.getBlue(neigh);
-        final int adj_a = hasAlpha ? cm.getAlpha(neigh) : 255;
+        final int r = pixelColour.getRed();
+        final int g = pixelColour.getGreen();
+        final int b = pixelColour.getBlue();
+        final int a = hasAlpha ? pixelColour.getAlpha() : 255;
+
+        final int adj_r = neighColour.getRed();
+        final int adj_g = neighColour.getGreen();
+        final int adj_b = neighColour.getBlue();
+        final int adj_a = hasAlpha ? neighColour.getAlpha() : 255;
 
         // Based https://stackoverflow.com/a/38425624 by spirit
         final int[] components = {r, g, b, a, adj_r, adj_g, adj_b, adj_a};
@@ -180,31 +184,35 @@ public class ColourAdjacencies {
 
     class SortByRgb implements Comparator<Integer> {
         public int compare(Integer a, Integer b) {
-            if (cm.getRed(a) != cm.getRed(b)) {
-                return cm.getRed(a) - cm.getRed(b);
+            final Color a2 = new Color(a, hasAlpha);
+            final Color b2 = new Color(b, hasAlpha);
+            if (a2.getRed() != b2.getRed()) {
+                return a2.getRed() - b2.getRed();
 
-            } else if (cm.getGreen(a) != cm.getGreen(b)) {
-                return cm.getGreen(a) - cm.getGreen(b);
+            } else if (a2.getGreen() != b2.getGreen()) {
+                return a2.getGreen() - b2.getGreen();
 
             } else {
-                return cm.getBlue(a) - cm.getBlue(b);
+                return a2.getBlue() - b2.getBlue();
             }
         }
     }
 
     class SortByRgbAlpha implements Comparator<Integer> {
         public int compare(Integer a, Integer b) {
-            if (cm.getRed(a) != cm.getRed(b)) {
-                return cm.getRed(a) - cm.getRed(b);
+            final Color a2 = new Color(a, hasAlpha);
+            final Color b2 = new Color(b, hasAlpha);
+            if (a2.getRed() != b2.getRed()) {
+                return a2.getRed() - b2.getRed();
 
-            } else if (cm.getGreen(a) != cm.getGreen(b)) {
-                return cm.getGreen(a) - cm.getGreen(b);
+            } else if (a2.getGreen() != b2.getGreen()) {
+                return a2.getGreen() - b2.getGreen();
 
-            } else if (cm.getBlue(a) != cm.getBlue(b)) {
-                return cm.getBlue(a) - cm.getBlue(b);
+            } else if (a2.getBlue() != b2.getBlue()) {
+                return a2.getBlue() - b2.getBlue();
 
             } else {
-                return cm.getAlpha(a) - cm.getAlpha(b);
+                return a2.getAlpha() - b2.getAlpha();
             }
         }
     }
