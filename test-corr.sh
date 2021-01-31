@@ -3,7 +3,7 @@
 # Customize these for your project:
 COMMAND='java -jar ./CoulAdj.jar'
 SAMPLES_DIR='./tests/samples/'
-RESULTS_DIR='./tests/samples/'
+RESULTS_DIR='./tests/results/'
 GOLDEN_DIR='./tests/'
 # (Make sure the DIR variables end with a /backslash/ )
 

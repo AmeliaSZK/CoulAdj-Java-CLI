@@ -51,7 +51,7 @@ fresh: clean all
 ################################################################################
 # Customize your tests below
 ################################################################################
-.PHONY: test test-simple test-corr
+.PHONY: test test-simple test-corr test-perf
 
 test: test-corr
 
@@ -60,3 +60,6 @@ test-simple:
 
 test-corr: 
 	bash test-corr.sh
+
+test-perf: 
+	bash test-perf.sh
