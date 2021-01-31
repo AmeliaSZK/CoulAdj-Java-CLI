@@ -109,8 +109,8 @@ public class ColourAdjacencies {
             return;
         }
 
-        final int pixel = image.getRGB(pixelX, pixelY);
-        final int neigh = image.getRGB(neighX, neighY);
+        final Integer pixel = image.getRGB(pixelX, pixelY);
+        final Integer neigh = image.getRGB(neighX, neighY);
 
         if (pixel != neigh) {
             register(pixel, neigh);
@@ -156,7 +156,7 @@ public class ColourAdjacencies {
         final int g = cm.getGreen(pixel);
         final int b = cm.getBlue(pixel);
         final int a = hasAlpha ? cm.getAlpha(pixel) : 255;
-        
+
         final int adj_r = cm.getRed(neigh);
         final int adj_g = cm.getGreen(neigh);
         final int adj_b = cm.getBlue(neigh);
