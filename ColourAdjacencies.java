@@ -16,6 +16,8 @@ public class ColourAdjacencies {
     private List<String> lines;
     private final ColorModel cm;
     private Map<Integer, Set<Integer>> adjacencies;
+    private final int maxX;
+    private final int maxY;
 
     private boolean adjacenciesAreComputed = false;
     private boolean linesAreComputed = false;
@@ -24,12 +26,16 @@ public class ColourAdjacencies {
         this.image = image;
         this.dontRelateDiagonals = DIAGONALS_DEFAULT;
         this.cm = image.getColorModel();
+        maxX = image.getWidth() - 1;
+        maxY = image.getHeight() - 1;
     }
 
     public ColourAdjacencies(BufferedImage image, boolean dontRelateDiagonals) {
         this.image = image;
         this.dontRelateDiagonals = dontRelateDiagonals;
         this.cm = image.getColorModel();
+        maxX = image.getWidth() - 1;
+        maxY = image.getHeight() - 1;
     }
 
     public void computeAdjacencies() {
@@ -41,9 +47,6 @@ public class ColourAdjacencies {
         final Comparator<Integer> comparator =
             hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
         adjacencies = new TreeMap<>(comparator);
-
-        final int maxX = image.getWidth() - 1;
-        final int maxY = image.getHeight() - 1;
 
         for (int x = 0; x <= maxX; x++) {
             for (int y = 0; y <= maxY; y++) {
@@ -74,9 +77,37 @@ public class ColourAdjacencies {
             evaluateOneNeighbour(x, y, -1, +1);
             evaluateOneNeighbour(x, y, -1, -1);
         }
+
+        return;
     }
 
-    private void evaluateOneNeighbour(int x, int y, int xOffset, int yOffset) {}
+    private void evaluateOneNeighbour(int x, int y, int xOffset, int yOffset) {
+        final int pixelX = x;
+        final int pixelY = y;
+        final int neighX = x + xOffset;
+        final int neighY = y + yOffset;
+
+        if (!validXY(neighX, neighY)) {
+            return;
+        }
+
+        final int pixel = image.getRGB(pixelX, pixelY);
+        final int neigh = image.getRGB(neighX, neighY);
+
+        if (pixel != neigh) {
+            register(pixel, neigh);
+        }
+
+        return;
+    }
+
+    private boolean validXY(int x, int y) {
+        final boolean isValidX = 0 <= x && x <= maxX;
+        final boolean isValidY = 0 <= y && y <= maxY;
+        return isValidX && isValidY;
+    }
+
+    private void register(int pixel, int neigh) {}
 
     public void computeLines() {
         if (linesAreComputed) {
