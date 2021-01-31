@@ -56,8 +56,27 @@ public class ColourAdjacencies {
     }
 
     private void evaluateAllNeighbours(int x, int y) {
+        boolean diagonalsAreRelated;
+        if (dontRelateDiagonals) {
+            diagonalsAreRelated = false;
+        } else {
+            diagonalsAreRelated = true;
+        }
 
+        evaluateOneNeighbour(x, y, +1, 0);
+        evaluateOneNeighbour(x, y, 0, +1);
+        evaluateOneNeighbour(x, y, 0, -1);
+        evaluateOneNeighbour(x, y, -1, 0);
+
+        if (diagonalsAreRelated) {
+            evaluateOneNeighbour(x, y, +1, +1);
+            evaluateOneNeighbour(x, y, +1, -1);
+            evaluateOneNeighbour(x, y, -1, +1);
+            evaluateOneNeighbour(x, y, -1, -1);
+        }
     }
+
+    private void evaluateOneNeighbour(int x, int y, int xOffset, int yOffset) {}
 
     public void computeLines() {
         if (linesAreComputed) {
