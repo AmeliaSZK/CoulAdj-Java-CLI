@@ -18,6 +18,8 @@ public class ColourAdjacencies {
     private Map<Integer, Set<Integer>> adjacencies;
     private final int maxX;
     private final int maxY;
+    final boolean hasAlpha;
+    private final Comparator<Integer> comparator;
 
     private boolean adjacenciesAreComputed = false;
     private boolean linesAreComputed = false;
@@ -28,6 +30,8 @@ public class ColourAdjacencies {
         this.cm = image.getColorModel();
         maxX = image.getWidth() - 1;
         maxY = image.getHeight() - 1;
+        hasAlpha = cm.hasAlpha();
+        comparator = hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
     }
 
     public ColourAdjacencies(BufferedImage image, boolean dontRelateDiagonals) {
@@ -36,6 +40,8 @@ public class ColourAdjacencies {
         this.cm = image.getColorModel();
         maxX = image.getWidth() - 1;
         maxY = image.getHeight() - 1;
+        hasAlpha = cm.hasAlpha();
+        comparator = hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
     }
 
     public void computeAdjacencies() {
@@ -43,9 +49,6 @@ public class ColourAdjacencies {
             return;
         }
 
-        final boolean hasAlpha = cm.hasAlpha();
-        final Comparator<Integer> comparator =
-            hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
         adjacencies = new TreeMap<>(comparator);
 
         for (int x = 0; x <= maxX; x++) {
@@ -107,7 +110,10 @@ public class ColourAdjacencies {
         return isValidX && isValidY;
     }
 
-    private void register(int pixel, int neigh) {}
+    private void register(int pixel, int neigh) {
+        adjacencies.putIfAbsent(pixel, new TreeSet<>(comparator));
+        adjacencies.get(pixel).add(neigh);
+    }
 
     public void computeLines() {
         if (linesAreComputed) {
