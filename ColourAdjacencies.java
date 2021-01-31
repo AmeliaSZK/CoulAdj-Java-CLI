@@ -10,46 +10,80 @@ import java.util.TreeSet;
 
 public class ColourAdjacencies {
     public static final boolean DIAGONALS_DEFAULT = false;
+    private static final String DELIMITER = "\t";
+
+    /* DO NOT CHANGE THESE HEADERS
+     *
+     * These headers are part of the API defined in the Readme.
+     * They MUST NOT be changed unless the major version number is incremented.
+     *
+     * The outputted files are meant to be parsed by programs that rely on
+     *    hardcoded column names.
+     *
+     * THE NAMES OF THE COLUMNS, AND THE ORDER IN WHICH THEY ARE WRITTEN,
+     *    ARE THE MOST CRITICAL PART OF THE API.
+     *
+     * DO NOT CHANGE
+     *
+     * DO NOT CHANGE
+     */
+    private static final String[] RGB_COLUMNS = {"r",     "g",     "b",
+                                                 "adj_r", "adj_g", "adj_b"};
+    private static final String[] RGBALPHA_COLUMNS = {
+        "r", "g", "b", "a", "adj_r", "adj_g", "adj_b", "adj_a"};
+
+    private static final String RGB_HEADER =
+        String.join(DELIMITER, RGB_COLUMNS);
+    private static final String RGBALPHA_HEADER =
+        String.join(DELIMITER, RGBALPHA_COLUMNS);
 
     private final BufferedImage image;
     private final boolean dontRelateDiagonals;
-    private List<String> lines;
+    private final boolean diagonalsAreRelated;
+    private final List<String> lines;
     private final ColorModel cm;
-    private Map<Integer, Set<Integer>> adjacencies;
+    private final Map<Integer, Set<Integer>> adjacencies;
     private final int maxX;
     private final int maxY;
-    final boolean hasAlpha;
+    private final boolean hasAlpha;
     private final Comparator<Integer> comparator;
+    private final String header;
 
     private boolean adjacenciesAreComputed = false;
     private boolean linesAreComputed = false;
 
     public ColourAdjacencies(BufferedImage image) {
         this.image = image;
-        this.dontRelateDiagonals = DIAGONALS_DEFAULT;
-        this.cm = image.getColorModel();
+        dontRelateDiagonals = DIAGONALS_DEFAULT;
+        cm = image.getColorModel();
         maxX = image.getWidth() - 1;
         maxY = image.getHeight() - 1;
         hasAlpha = cm.hasAlpha();
         comparator = hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
+        adjacencies = new TreeMap<>(comparator);
+        lines = new ArrayList<>();
+        diagonalsAreRelated = dontRelateDiagonals ? false : true;
+        header = hasAlpha ? RGBALPHA_HEADER : RGB_HEADER;
     }
 
     public ColourAdjacencies(BufferedImage image, boolean dontRelateDiagonals) {
         this.image = image;
         this.dontRelateDiagonals = dontRelateDiagonals;
-        this.cm = image.getColorModel();
+        cm = image.getColorModel();
         maxX = image.getWidth() - 1;
         maxY = image.getHeight() - 1;
         hasAlpha = cm.hasAlpha();
         comparator = hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
+        adjacencies = new TreeMap<>(comparator);
+        lines = new ArrayList<>();
+        diagonalsAreRelated = dontRelateDiagonals ? false : true;
+        header = hasAlpha ? RGBALPHA_HEADER : RGB_HEADER;
     }
 
     public void computeAdjacencies() {
         if (adjacenciesAreComputed) {
             return;
         }
-
-        adjacencies = new TreeMap<>(comparator);
 
         for (int x = 0; x <= maxX; x++) {
             for (int y = 0; y <= maxY; y++) {
@@ -62,13 +96,6 @@ public class ColourAdjacencies {
     }
 
     private void evaluateAllNeighbours(int x, int y) {
-        boolean diagonalsAreRelated;
-        if (dontRelateDiagonals) {
-            diagonalsAreRelated = false;
-        } else {
-            diagonalsAreRelated = true;
-        }
-
         evaluateOneNeighbour(x, y, +1, 0);
         evaluateOneNeighbour(x, y, 0, +1);
         evaluateOneNeighbour(x, y, 0, -1);
@@ -121,8 +148,7 @@ public class ColourAdjacencies {
         } else if (!adjacenciesAreComputed) {
             computeAdjacencies();
         }
-
-        lines = new ArrayList<String>();
+        
         // TODO
 
         linesAreComputed = true;
