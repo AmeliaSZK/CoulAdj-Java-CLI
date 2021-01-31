@@ -1,12 +1,14 @@
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class ColourAdjacencies {
     public static final boolean DIAGONALS_DEFAULT = false;
@@ -32,6 +34,7 @@ public class ColourAdjacencies {
     private static final String[] RGBALPHA_COLUMNS = {
         "r", "g", "b", "a", "adj_r", "adj_g", "adj_b", "adj_a"};
 
+    @SuppressWarnings("unused") // API says images sans alpha always get 255
     private static final String RGB_HEADER =
         String.join(DELIMITER, RGB_COLUMNS);
     private static final String RGBALPHA_HEADER =
@@ -47,24 +50,10 @@ public class ColourAdjacencies {
     private final int maxY;
     private final boolean hasAlpha;
     private final Comparator<Integer> comparator;
-    private final String header;
+    private final String header = RGBALPHA_HEADER; //
 
     private boolean adjacenciesAreComputed = false;
     private boolean linesAreComputed = false;
-
-    public ColourAdjacencies(BufferedImage image) {
-        this.image = image;
-        dontRelateDiagonals = DIAGONALS_DEFAULT;
-        cm = image.getColorModel();
-        maxX = image.getWidth() - 1;
-        maxY = image.getHeight() - 1;
-        hasAlpha = cm.hasAlpha();
-        comparator = hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
-        adjacencies = new TreeMap<>(comparator);
-        lines = new ArrayList<>();
-        diagonalsAreRelated = dontRelateDiagonals ? false : true;
-        header = hasAlpha ? RGBALPHA_HEADER : RGB_HEADER;
-    }
 
     public ColourAdjacencies(BufferedImage image, boolean dontRelateDiagonals) {
         this.image = image;
@@ -77,7 +66,6 @@ public class ColourAdjacencies {
         adjacencies = new TreeMap<>(comparator);
         lines = new ArrayList<>();
         diagonalsAreRelated = dontRelateDiagonals ? false : true;
-        header = hasAlpha ? RGBALPHA_HEADER : RGB_HEADER;
     }
 
     public void computeAdjacencies() {
@@ -148,11 +136,39 @@ public class ColourAdjacencies {
         } else if (!adjacenciesAreComputed) {
             computeAdjacencies();
         }
-        
-        // TODO
+
+        lines.add(header);
+        for (Map.Entry<Integer, Set<Integer>> entry : adjacencies.entrySet()) {
+            final int pixel = entry.getKey();
+            final Set<Integer> allNeighbours = entry.getValue();
+            for (final int neigh : allNeighbours) {
+                final String adjacency = formatAdjacency(pixel, neigh);
+                lines.add(adjacency);
+            }
+        }
 
         linesAreComputed = true;
         return;
+    }
+
+    private String formatAdjacency(int pixel, int neigh) {
+        final int r = cm.getRed(pixel);
+        final int g = cm.getGreen(pixel);
+        final int b = cm.getBlue(pixel);
+        final int a = hasAlpha ? cm.getAlpha(pixel) : 255;
+        
+        final int adj_r = cm.getRed(neigh);
+        final int adj_g = cm.getGreen(neigh);
+        final int adj_b = cm.getBlue(neigh);
+        final int adj_a = hasAlpha ? cm.getAlpha(neigh) : 255;
+
+        // Based https://stackoverflow.com/a/38425624 by spirit
+        final int[] components = {r, g, b, a, adj_r, adj_g, adj_b, adj_a};
+        final String result = Arrays.stream(components)
+                                  .mapToObj(String::valueOf)
+                                  .collect(Collectors.joining(DELIMITER));
+
+        return result;
     }
 
     public List<String> toLines() {
