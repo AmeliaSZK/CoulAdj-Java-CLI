@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 
 public class CLI {
     public static final String DIAGONALS_OPTION = "--dont-relate-diagonals";
-    public static final boolean DIAGONALS_DEFAULT = false;
 
     public static final String ERRMSG_DIAGONALS =
         "Error: With $d arguments, the 1st must be `%s`\n";
@@ -31,7 +30,7 @@ public class CLI {
         LocalDateTime startTime = LocalDateTime.now();
 
         // # Parse command line
-        boolean dontRelateDiagonals = DIAGONALS_DEFAULT;
+        boolean dontRelateDiagonals = ColourAdjacencies.DIAGONALS_DEFAULT;
         String imageFilepath = ""; // Initialized to shut up the compiler
         String resultsFilepath = "";
 
