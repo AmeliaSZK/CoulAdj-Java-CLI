@@ -65,7 +65,7 @@ public class ColourAdjacencies {
         comparator = hasAlpha ? new SortByRgbAlpha() : new SortByRgb();
         adjacencies = new TreeMap<>(comparator);
         lines = new ArrayList<>();
-        diagonalsAreRelated = dontRelateDiagonals ? false : true;
+        diagonalsAreRelated = this.dontRelateDiagonals ? false : true;
     }
 
     public void computeAdjacencies() {
@@ -109,8 +109,8 @@ public class ColourAdjacencies {
             return;
         }
 
-        final Integer pixel = image.getRGB(pixelX, pixelY);
-        final Integer neigh = image.getRGB(neighX, neighY);
+        final int pixel = image.getRGB(pixelX, pixelY);
+        final int neigh = image.getRGB(neighX, neighY);
 
         if (pixel != neigh) {
             register(pixel, neigh);
